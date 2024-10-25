@@ -1,0 +1,45 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: start-dev
+    environment:
+      - KC_BOOTSTRAP_ADMIN_USERNAME=sso26
+      - KC_BOOTSTRAP_ADMIN_PASSWORD=sso26
+      - KC_DB=postgres
+      - KC_DB_USERNAME=dev_usr
+      - KC_DB_PASSWORD=password
+      - KC_DB_URL_DATABASE=keycloak
+      - KC_DB_URL_HOST=postgres
+      - KC_DB_URL_PORT=5432
+    depends_on:
+      - postgres
+    ports:
+        - 8081:8080
+
+  # nginx:
+  #   build:
+  #     context: nginx-conf
+  #     dockerfile: Dockerfile
+  #   # running nginx in debug mode
+  #   # https://hub.docker.com/_/nginx
+  #   command: [nginx-debug, '-g', 'daemon off;']
+  #   environment:
+  #     - KEYCLOAK_HOST=app
+  #     - KEYCLOAK_PORT=8080
+  #     - X_FORWARDED_PROTO_SCHEME=http
+  #     - NGINX_X_FORWARDED_PORT=8080
+  #   ports:
+  #     - "8080:8080"
+  #   depends_on:
+  #     - app
+
+  postgres:
+    image: postgres:16
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=dev_usr
+      - POSTGRES_DB=keycloak
+    ports:
+      - "5432:5432"
